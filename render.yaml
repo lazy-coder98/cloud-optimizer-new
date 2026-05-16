@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cloud-optimizer
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_DATA_MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_AUTH_USERNAME
+        sync: false
+      - key: APP_AUTH_PASSWORD
+        sync: false
