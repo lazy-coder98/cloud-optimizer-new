@@ -124,6 +124,13 @@ button:disabled {
   font-size: 1.25rem;
 }
 
+.auth-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .app-shell {
   padding: 28px;
 }
@@ -306,6 +313,20 @@ input:focus {
     box-shadow 160ms ease,
     border-color 160ms ease,
     background 160ms ease;
+}
+
+.login-card .text-button {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  box-shadow: none;
+}
+
+.login-card .text-button:hover {
+  transform: none;
+  color: var(--teal-dark);
 }
 
 .primary-button,

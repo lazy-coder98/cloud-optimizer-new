@@ -50,6 +50,7 @@ function MetricInput({ label, value, onChange }) {
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [authMode, setAuthMode] = useState("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [cpu, setCpu] = useState("");
@@ -97,10 +98,11 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const handleLogin = async () => {
+  const handleAuth = async () => {
     try {
       setError("");
-      const res = await axios.post(`${API_BASE}/api/auth/login`, {
+      const endpoint = authMode === "signup" ? "signup" : "login";
+      const res = await axios.post(`${API_BASE}/api/auth/${endpoint}`, {
         username,
         password,
       });
@@ -110,7 +112,10 @@ function App() {
       setUsername("");
       setPassword("");
     } catch (err) {
-      setError("Login failed: " + (err.response?.data?.message || err.message));
+      setError(
+        `${authMode === "signup" ? "Signup" : "Login"} failed: ` +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -178,7 +183,19 @@ function App() {
 
           <div className="auth-card-wrap">
             <div className="login-card">
-              <h2>Sign in</h2>
+              <div className="auth-card-header">
+                <h2>{authMode === "signup" ? "Create account" : "Sign in"}</h2>
+                <button
+                  className="text-button"
+                  type="button"
+                  onClick={() => {
+                    setError("");
+                    setAuthMode(authMode === "signup" ? "login" : "signup");
+                  }}
+                >
+                  {authMode === "signup" ? "Sign in" : "Sign up"}
+                </button>
+              </div>
               {error && <p className="error">{error}</p>}
               <input
                 type="text"
@@ -192,7 +209,9 @@ function App() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button onClick={handleLogin}>Login</button>
+              <button onClick={handleAuth}>
+                {authMode === "signup" ? "Create account" : "Login"}
+              </button>
             </div>
           </div>
         </section>

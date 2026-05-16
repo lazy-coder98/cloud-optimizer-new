@@ -25,7 +25,7 @@ public class OptimizationService {
     private UsageRepository usageRepository;
 
     // ================= HISTORY =================
-    public Page<UsageRecord> getHistory(int page, int size) {
+    public Page<UsageRecord> getHistory(String username, int page, int size) {
 
         Pageable pageable = PageRequest.of(
                 page,
@@ -33,11 +33,11 @@ public class OptimizationService {
                 Sort.by(Sort.Direction.DESC, "_id") // latest first
         );
 
-        return usageRepository.findAll(pageable);
+        return usageRepository.findByUsername(username, pageable);
     }
 
     // ================= ANALYSIS =================
-    public OptimizationSuggestion analyzeResources(OptimizationRequest request) {
+    public OptimizationSuggestion analyzeResources(String username, OptimizationRequest request) {
 
         OptimizationSuggestion suggestion = new OptimizationSuggestion();
 
@@ -116,6 +116,7 @@ public class OptimizationService {
         // ===== SAVE TO MONGODB =====
         UsageRecord record = new UsageRecord();
 
+        record.setUsername(username);
         record.setCpuUsage(cpu);
         record.setMemoryUsage(memory);
         record.setStorageUsage(storage);
