@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  text-align: center;
+  padding: 40px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.card button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background: #2563eb;
+}
+
+.result-card {
+  margin-top: 20px;
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.error {
+  color: #ff4d4d;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #888;
+  color: #ccc;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 12px;
+}

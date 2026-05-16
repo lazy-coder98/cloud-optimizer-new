@@ -1,0 +1,8 @@
+target
+.git
+.idea
+.vscode
+*.iml
+cloud-optimizer-frontend/node_modules
+cloud-optimizer-frontend/build
+**/.DS_Store
