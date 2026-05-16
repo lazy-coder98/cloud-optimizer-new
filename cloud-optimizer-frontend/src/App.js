@@ -67,6 +67,9 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiAdvice, setAiAdvice] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const [error, setError] = useState("");
 
   const authHeaders = useMemo(
@@ -128,6 +131,8 @@ function App() {
     localStorage.removeItem("token");
     setToken("");
     setResult(null);
+    setAiAdvice("");
+    setAiQuestion("");
     setHistory([]);
     setHistoryPage(0);
     setTotalPages(0);
@@ -152,6 +157,8 @@ function App() {
         authHeaders
       );
       setResult(res.data);
+      setAiAdvice("");
+      setAiQuestion("");
       await fetchHistory(0);
     } catch (err) {
       setError(
@@ -179,6 +186,45 @@ function App() {
       estimatedMonthlySavingAmount: item.estimatedMonthlySavingAmount,
       rationale: item.rationale,
     });
+    setAiAdvice("");
+    setAiQuestion("");
+  };
+
+  const handleAiAdvice = async () => {
+    if (!result) return;
+
+    try {
+      setAiLoading(true);
+      setError("");
+      const res = await axios.post(
+        `${API_BASE}/api/ai/advice`,
+        {
+          cpuUsage: Number(cpu),
+          memoryUsage: Number(memory),
+          storageUsage: Number(storage),
+          provider,
+          workloadType,
+          monthlyCost: Number(monthlyCost) || 0,
+          recommendation: result.recommendation,
+          severity: result.severity,
+          estimatedCostSaving: result.estimatedCostSaving,
+          estimatedMonthlySavingAmount: result.estimatedMonthlySavingAmount,
+          rationale: result.rationale,
+          question: aiQuestion,
+        },
+        authHeaders
+      );
+      setAiAdvice(res.data.advice || "");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          err.message ||
+          "AI advisor failed"
+      );
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   if (!token) {
@@ -330,6 +376,7 @@ function App() {
           </div>
 
           {result ? (
+            <>
             <div className={`result-panel ${result.severity?.toLowerCase()}`}>
               <div>
                 <span className={`severity ${result.severity?.toLowerCase()}`}>
@@ -346,6 +393,29 @@ function App() {
                 )}
               </p>
             </div>
+            <div className="ai-panel">
+              <div className="panel-heading compact">
+                <div>
+                  <p className="eyebrow">Gemini advisor</p>
+                  <h2>AI Cost Advisor</h2>
+                </div>
+                <button
+                  className="ghost-button"
+                  type="button"
+                  onClick={handleAiAdvice}
+                  disabled={aiLoading}
+                >
+                  {aiLoading ? "Thinking..." : "Ask Gemini"}
+                </button>
+              </div>
+              <textarea
+                value={aiQuestion}
+                onChange={(event) => setAiQuestion(event.target.value)}
+                placeholder="Ask about this result, or leave blank for an action plan."
+              />
+              {aiAdvice && <div className="ai-answer">{aiAdvice}</div>}
+            </div>
+            </>
           ) : (
             <div className="placeholder-panel">
               <p className="eyebrow">Awaiting analysis</p>
