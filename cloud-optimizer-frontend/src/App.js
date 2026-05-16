@@ -4,6 +4,8 @@ import "./App.css";
 
 const API_BASE = (process.env.REACT_APP_API_URL || "").replace(/\/$/, "");
 const PAGE_SIZE = 6;
+const PROVIDERS = ["AWS", "Azure", "GCP"];
+const WORKLOAD_TYPES = ["Production web app", "Development/Test", "Batch job", "Database"];
 
 function formatDate(value) {
   if (!value) return "Saved query";
@@ -56,6 +58,9 @@ function App() {
   const [cpu, setCpu] = useState("");
   const [memory, setMemory] = useState("");
   const [storage, setStorage] = useState("");
+  const [provider, setProvider] = useState("AWS");
+  const [workloadType, setWorkloadType] = useState("Production web app");
+  const [monthlyCost, setMonthlyCost] = useState("");
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyPage, setHistoryPage] = useState(0);
@@ -140,6 +145,9 @@ function App() {
           cpuUsage: Number(cpu),
           memoryUsage: Number(memory),
           storageUsage: Number(storage),
+          provider,
+          workloadType,
+          monthlyCost: Number(monthlyCost) || 0,
         },
         authHeaders
       );
@@ -161,10 +169,15 @@ function App() {
     setCpu(item.cpuUsage);
     setMemory(item.memoryUsage);
     setStorage(item.storageUsage);
+    setProvider(item.provider || "AWS");
+    setWorkloadType(item.workloadType || "Production web app");
+    setMonthlyCost(item.monthlyCost || "");
     setResult({
       recommendation: item.recommendation,
       severity: item.severity,
       estimatedCostSaving: item.estimatedCostSaving,
+      estimatedMonthlySavingAmount: item.estimatedMonthlySavingAmount,
+      rationale: item.rationale,
     });
   };
 
@@ -280,6 +293,42 @@ function App() {
             />
           </div>
 
+          <div className="context-grid">
+            <label className="context-field">
+              <span>Provider</span>
+              <select value={provider} onChange={(e) => setProvider(e.target.value)}>
+                {PROVIDERS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="context-field">
+              <span>Workload</span>
+              <select
+                value={workloadType}
+                onChange={(e) => setWorkloadType(e.target.value)}
+              >
+                {WORKLOAD_TYPES.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="context-field">
+              <span>Monthly cost</span>
+              <input
+                type="number"
+                min="0"
+                placeholder="0"
+                value={monthlyCost}
+                onChange={(e) => setMonthlyCost(e.target.value)}
+              />
+            </label>
+          </div>
+
           {result ? (
             <div className={`result-panel ${result.severity?.toLowerCase()}`}>
               <div>
@@ -287,10 +336,14 @@ function App() {
                   {result.severity}
                 </span>
                 <h3>{result.recommendation}</h3>
+                {result.rationale && <p className="rationale">{result.rationale}</p>}
               </div>
               <p>
-                Estimated monthly saving{" "}
+                Estimated monthly saving
                 <strong>{result.estimatedCostSaving}%</strong>
+                {Number(result.estimatedMonthlySavingAmount) > 0 && (
+                  <span>${result.estimatedMonthlySavingAmount}</span>
+                )}
               </p>
             </div>
           ) : (
@@ -340,6 +393,11 @@ function App() {
                 </div>
                 <p>{item.recommendation}</p>
                 <div className="usage-row">
+                  <span>{item.provider || "AWS"}</span>
+                  <span>{item.workloadType || "Workload"}</span>
+                  {Number(item.monthlyCost) > 0 && (
+                    <span>${item.monthlyCost}/mo</span>
+                  )}
                   <span className={usageLevel(item.cpuUsage)}>
                     CPU {item.cpuUsage}%
                   </span>

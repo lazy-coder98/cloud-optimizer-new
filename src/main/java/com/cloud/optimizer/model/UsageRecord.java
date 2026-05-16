@@ -14,16 +14,16 @@ public class UsageRecord {
     private Double cpuUsage;
     private Double memoryUsage;
     private Double storageUsage;
+    private String provider;
+    private String workloadType;
+    private Double monthlyCost;
 
     private String recommendation;
     private String severity;
     private Double estimatedCostSaving;
+    private Double estimatedMonthlySavingAmount;
+    private String rationale;
     private Instant createdAt;
-
-    public UsageRecord() {
-    }
-
-    // ===== GETTERS & SETTERS =====
 
     public String getId() {
         return id;
@@ -65,6 +65,30 @@ public class UsageRecord {
         this.storageUsage = storageUsage;
     }
 
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getWorkloadType() {
+        return workloadType;
+    }
+
+    public void setWorkloadType(String workloadType) {
+        this.workloadType = workloadType;
+    }
+
+    public Double getMonthlyCost() {
+        return monthlyCost;
+    }
+
+    public void setMonthlyCost(Double monthlyCost) {
+        this.monthlyCost = monthlyCost;
+    }
+
     public String getRecommendation() {
         return recommendation;
     }
@@ -87,6 +111,22 @@ public class UsageRecord {
 
     public void setEstimatedCostSaving(Double estimatedCostSaving) {
         this.estimatedCostSaving = estimatedCostSaving;
+    }
+
+    public Double getEstimatedMonthlySavingAmount() {
+        return estimatedMonthlySavingAmount;
+    }
+
+    public void setEstimatedMonthlySavingAmount(Double estimatedMonthlySavingAmount) {
+        this.estimatedMonthlySavingAmount = estimatedMonthlySavingAmount;
+    }
+
+    public String getRationale() {
+        return rationale;
+    }
+
+    public void setRationale(String rationale) {
+        this.rationale = rationale;
     }
 
     public Instant getCreatedAt() {
